@@ -3,6 +3,7 @@ import './plugins/fontawesome'
 import Mint from 'mint-ui';
 
 import App from './App.vue'
+import router from './router'
 
 
 Vue.use(Mint);
@@ -10,5 +11,6 @@ Vue.use(Mint);
 Vue.config.productionTip = false
 
 new Vue({
-  render: h => h(App),
+  router,
+  render: h => h(App)
 }).$mount('#app')
