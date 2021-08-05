@@ -1,28 +1,34 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <game v-if="activePage == 'game'"></game>
+    <dares v-if="activePage == 'dares'"></dares>
+    <mt-tabbar fixed v-model="activePage">
+      <mt-tab-item id="game">
+        <font-awesome-icon icon="gamepad" size="lg"></font-awesome-icon><br>
+      </mt-tab-item>
+      <mt-tab-item id="dares">
+        <font-awesome-icon icon="sticky-note" size="lg"></font-awesome-icon><br>
+      </mt-tab-item>
+    </mt-tabbar>
+
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import game from './pages/game.vue'
+import dares from './pages/dares.vue'
 
 export default {
+  components: { game,dares },
   name: 'App',
-  components: {
-    HelloWorld
-  }
+  data() {
+    return {
+      activePage:'game'
+    }
+  },
 }
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+
 </style>
