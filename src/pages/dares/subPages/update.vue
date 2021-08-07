@@ -1,6 +1,6 @@
 <template>
   <div>
-    <update title="Update Dare" :dare="dare" @save="save" @cancel="goBack">
+    <update title="Update Dare" @save="save" @cancel="goBack">
       <dareEditor v-model="dare"></dareEditor>
     </update>
   </div>
@@ -14,7 +14,9 @@ export default {
   name: "dareNew",
   data() {
     return {
-      dare: {},
+      dare: {
+        tags: {},
+      },
       db: new PouchDB("dare"),
     };
   },

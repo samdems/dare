@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import game from '../pages/game'
 import dares from '../pages/dares/index'
 import players from '../pages/players/index'
+import tags from '../pages/tags/index'
 
 Vue.use(VueRouter)
 
@@ -13,7 +14,9 @@ const routes = [
     component: game
   },
   ...dares,
-  ...players
+  ...players,
+  ...tags
+  
 
 ]
 

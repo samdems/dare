@@ -1,11 +1,6 @@
 <template>
   <div>
-    <update
-      title="Update Player"
-      :player="player"
-      @save="save"
-      @cancel="goBack"
-    >
+    <update title="Update Player" @save="save" @cancel="goBack">
       <playerEditor v-model="player"></playerEditor>
     </update>
   </div>

@@ -24,25 +24,12 @@ export default {
     value: Object,
     title: String,
   },
-  data() {
-    return {
-      dare: {},
-    };
-  },
   methods: {
     async save() {
       this.$emit("save");
     },
     cancel() {
       this.$emit("cancel");
-    },
-  },
-  watch: {
-    value() {
-      this.dare = this.value;
-    },
-    dare() {
-      this.value = this.dare;
     },
   },
 };

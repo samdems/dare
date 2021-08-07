@@ -87,8 +87,22 @@ export default {
       if (this.players.length == 0) return;
       this.nextPlayer();
     },
+    convertTagToArray(tags) {
+      return Object.keys(_.omitBy(tags, (value) => value === false));
+    },
+    checkPlayerHasAllTagsInArray(tags) {
+      return (
+        tags.filter((tag) => {
+          return this.activePlayerTags.includes(tag);
+        }).length != 0
+      );
+    },
     randomActiveDare() {
-      this.aciveDare = _.sample(this.dares).doc;
+      const dares = this.dares.filter((dare) => {
+        const tags = this.convertTagToArray({ ...dare.doc.tags });
+        return this.checkPlayerHasAllTagsInArray(tags);
+      });
+      this.aciveDare = _.sample(dares)?.doc;
     },
   },
   computed: {
@@ -96,6 +110,11 @@ export default {
       if (!this.aciveDare) return "";
       if (!this.aciveDare.text) return this.aciveDare.name;
       return this.aciveDare.text.split(".p.").join(this.activePlayer.name);
+    },
+    activePlayerTags() {
+      return Object.keys(
+        _.omitBy(this.activePlayer.tags, (value) => value === false)
+      );
     },
   },
 };

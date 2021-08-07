@@ -9,6 +9,9 @@
     <mt-tab-item id="players">
       <font-awesome-icon icon="users" size="lg"></font-awesome-icon><br />
     </mt-tab-item>
+    <mt-tab-item id="tags">
+      <font-awesome-icon icon="tags" size="lg"></font-awesome-icon><br />
+    </mt-tab-item>
   </mt-tabbar>
 </template>
 
