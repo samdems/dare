@@ -32,7 +32,7 @@
 
 <script>
 import PouchDB from "pouchdb";
-import tagPicker from "./tagPicker";
+import tagPicker from "../../../components/tagPicker";
 import popover from "../../../components/popover.vue";
 export default {
   props: ["value"],
