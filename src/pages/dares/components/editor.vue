@@ -8,21 +8,42 @@
       type="textarea"
       rows="4"
     ></mt-field>
-    <mt-cell v-for="tag in this.tags" :key="tag.id" :title="tag.doc.name">
-      <mt-switch v-model="dare.tags[tag.id]"></mt-switch>
+    <mt-cell>
+      <div slot="title">
+        Tags
+      </div>
+      <mt-button type="primary" @click="showTags = !showTags">
+        update Tags
+      </mt-button>
     </mt-cell>
+    <mt-badge
+      style="margin:5px"
+      v-for="(tag, index) in dare.tags"
+      :key="index"
+      size="small"
+    >
+      {{ findTag(index) }}
+    </mt-badge>
+    <popover title="Tags" v-model="showTags">
+      <tagPicker :Alltags="tags" v-model="dare.tags" />
+    </popover>
   </div>
 </template>
 
 <script>
 import PouchDB from "pouchdb";
+import tagPicker from "./tagPicker";
+import popover from "../../../components/popover.vue";
 export default {
   props: ["value"],
+  components: { popover, tagPicker },
   data() {
     return {
       dare: {
         tags: {},
+        tagsToRemove: {},
       },
+      showTags: false,
       dbTag: new PouchDB("tag"),
       tags: [],
     };
@@ -37,6 +58,11 @@ export default {
         attachments: true,
       });
       this.tags = doc.rows;
+    },
+    findTag(id) {
+      const tag = this.tags.find((el) => el.id == id);
+      if (!tag) return "_-_";
+      return tag.doc.name;
     },
   },
   watch: {
