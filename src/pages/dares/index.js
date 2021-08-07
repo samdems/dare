@@ -4,17 +4,17 @@ import update from './subPages/update'
 export default [
     {
         path: '/dares',
-        name: 'dares',
+        name: 'Dares',
         component: list
     },
     {
         path: '/dares/new',
-        name: 'dare new',
+        name: 'new dare',
         component: New
       },
       {
         path: '/dares/:id',
-        name: 'dare updare',
+        name: 'Updare dare ',
         component: update
       }
     ]

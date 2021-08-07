@@ -24,9 +24,6 @@ export default {
       if (!this.activePage) return;
       this.$router.push("/" + this.activePage);
     },
-    $route() {
-      this.activePage = null;
-    },
   },
 };
 </script>

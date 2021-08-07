@@ -1,8 +1,15 @@
 <template>
   <div>
-    <h1 style="text-align:center">{{ text }}</h1>
-    <mt-button size="large" type="primary" @click="nextRound()">done</mt-button>
-    <mt-button size="large" type="danger" style="margin-top:10px"
+    <h1 style="text-align:center">{{ text || message }}</h1>
+    <mt-button :disabled="hide" size="large" type="primary" @click="nextRound()"
+      >done</mt-button
+    >
+    <mt-button
+      :disabled="hide"
+      size="large"
+      type="danger"
+      style="margin-top:10px"
+      @click="nextRound()"
       >fail</mt-button
     >
   </div>
@@ -18,18 +25,39 @@ export default {
     return {
       dbDare: new PouchDB("dare"),
       dbPlayer: new PouchDB("player"),
-      aciveDare: {},
+      aciveDare: null,
       activePlayerCount: 0,
-      activePlayer: {},
+      activePlayer: null,
       dares: [],
       players: [],
+      hide: true,
+      message: "loading",
     };
   },
-  mounted() {
-    this.loadPlayers();
-    this.loadDares();
+  async mounted() {
+    await this.loadPlayers();
+    await this.loadDares();
+    await this.checkData();
   },
   methods: {
+    checkData() {
+      if (!this.activePlayer && !this.activePlayer) {
+        this.hide = true;
+        this.message = "You need to add dares and players to play";
+        return;
+      }
+      if (!this.activePlayer) {
+        this.hide = true;
+        this.message = "You need to add players to play";
+        return;
+      }
+      if (!this.aciveDare) {
+        this.hide = true;
+        this.message = "You need to add dares to play";
+        return;
+      }
+      this.hide = false;
+    },
     nextRound() {
       this.nextPlayer();
       this.randomActiveDare();
@@ -47,7 +75,7 @@ export default {
         attachments: true,
       });
       this.dares = doc.rows;
-      if (this.dares.length == 0) return this.$router.push("/dares");
+      if (this.dares.length == 0) return;
       this.randomActiveDare();
     },
     async loadPlayers() {
@@ -56,7 +84,7 @@ export default {
         attachments: true,
       });
       this.players = doc.rows;
-      if (this.players.length == 0) return this.$router.push("/players");
+      if (this.players.length == 0) return;
       this.nextPlayer();
     },
     randomActiveDare() {
@@ -65,7 +93,7 @@ export default {
   },
   computed: {
     text() {
-      if (!this.aciveDare) return "error no active Dare found";
+      if (!this.aciveDare) return "";
       if (!this.aciveDare.text) return this.aciveDare.name;
       return this.aciveDare.text.split(".p.").join(this.activePlayer.name);
     },

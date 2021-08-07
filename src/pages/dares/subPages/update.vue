@@ -1,6 +1,6 @@
 <template>
   <div>
-    <update title="Update" :dare="dare" @save="save" @cancel="goBack">
+    <update title="Update Dare" :dare="dare" @save="save" @cancel="goBack">
       <dareEditor v-model="dare"></dareEditor>
     </update>
   </div>

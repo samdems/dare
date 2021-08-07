@@ -9,12 +9,12 @@ export default [
     },
     {
         path: '/players/new',
-        name: 'player new',
+        name: 'New player',
         component: New
       },
       {
         path: '/players/:id',
-        name: 'player update',
+        name: 'Update player',
         component: update
       }
     ]
