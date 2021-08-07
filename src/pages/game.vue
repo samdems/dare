@@ -98,11 +98,7 @@ export default {
       );
     },
     randomActiveDare() {
-      const dares = this.dares.filter((dare) => {
-        const tags = this.convertTagToArray({ ...dare.doc.tags });
-        return this.checkPlayerHasAllTagsInArray(tags);
-      });
-      this.aciveDare = _.sample(dares)?.doc;
+      this.aciveDare = _.sample(this.possibleDares)?.doc;
     },
   },
   computed: {
@@ -115,6 +111,12 @@ export default {
       return Object.keys(
         _.omitBy(this.activePlayer.tags, (value) => value === false)
       );
+    },
+    possibleDares() {
+      return this.dares.filter((dare) => {
+        const tags = this.convertTagToArray(dare.doc.tags);
+        return this.checkPlayerHasAllTagsInArray(tags);
+      });
     },
   },
 };
