@@ -1,7 +1,7 @@
 <template>
   <div>
     <h1 style="text-align:center">{{ text || message }}</h1>
-    <mt-button :disabled="hide" size="large" type="primary" @click="nextRound()"
+    <mt-button :disabled="hide" size="large" type="primary" @click="done()"
       >done</mt-button
     >
     <mt-button
@@ -57,6 +57,17 @@ export default {
         return;
       }
       this.hide = false;
+    },
+    tagsToRemoveUpate() {
+      if (!this.aciveDare.tagsToRemove) return;
+      Object.keys(this.aciveDare.tagsToRemove).forEach((index) => {
+        delete this.activePlayer.tags[index];
+      });
+    },
+    done() {
+      this.tagsToRemoveUpate();
+
+      this.nextRound();
     },
     nextRound() {
       this.nextPlayer();

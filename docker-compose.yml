@@ -1,0 +1,13 @@
+version: "3.9" # optional since v1.27.0
+services:
+  web:
+    build: .
+    ports:
+      - "8888:8080"
+    volumes:
+      - .:/app
+  build:
+    build: .
+    command: npm run watch
+    volumes:
+      - .:/app
