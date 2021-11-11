@@ -115,8 +115,9 @@ export default {
   computed: {
     text() {
       if (!this.aciveDare) return "";
-      if (!this.aciveDare.text) return this.aciveDare.name;
-      return this.aciveDare.text.split(".p.").join(this.activePlayer.name);
+      if (!this.aciveDare.text)
+        return this.activePlayer.name + " " + this.aciveDare.name;
+      return this.aciveDare.text.split("$").join(this.activePlayer.name);
     },
     activePlayerTags() {
       return Object.keys(
