@@ -1,134 +1,59 @@
 <template>
   <div>
-    <h1 style="text-align:center">{{ text || message }}</h1>
-    <mt-button :disabled="hide" size="large" type="primary" @click="done()"
-      >done</mt-button
-    >
-    <mt-button
-      :disabled="hide"
-      size="large"
-      type="danger"
-      style="margin-top:10px"
-      @click="nextRound()"
-      >fail</mt-button
-    >
+    <div v-if="error">
+      {{ error }}
+    </div>
+    <div v-else>
+      <h1 style="text-align:center">{{ activeDareText }}</h1>
+
+      <mt-button size="large" type="primary" @click="done()">done</mt-button>
+      <mt-button
+        size="large"
+        type="danger"
+        style="margin-top:10px"
+        @click="fail()"
+        >fail</mt-button
+      >
+    </div>
   </div>
 </template>
 
 <script>
-import PouchDB from "pouchdb";
-import _ from "lodash";
+import DaresServices from "../services/dares.js";
 
 export default {
   name: "game",
   data() {
     return {
-      dbDare: new PouchDB("dare"),
-      dbPlayer: new PouchDB("player"),
-      aciveDare: null,
-      activePlayerCount: 0,
-      activePlayer: null,
-      dares: [],
-      players: [],
-      hide: true,
-      message: "loading",
+      daresServices: null,
     };
   },
   async mounted() {
-    await this.loadPlayers();
-    await this.loadDares();
-    await this.checkData();
+    this.daresServices = await DaresServices();
+    this.daresServices?.findNextDare();
   },
   methods: {
-    checkData() {
-      if (!this.activePlayer && !this.activePlayer) {
-        this.hide = true;
-        this.message = "You need to add dares and players to play";
-        return;
-      }
-      if (!this.activePlayer) {
-        this.hide = true;
-        this.message = "You need to add players to play";
-        return;
-      }
-      if (!this.aciveDare) {
-        this.hide = true;
-        this.message = "You need to add dares to play";
-        return;
-      }
-      this.hide = false;
-    },
-    tagsToRemoveUpate() {
-      if (!this.aciveDare.tagsToRemove) return;
-      Object.keys(this.aciveDare.tagsToRemove).forEach((index) => {
-        delete this.activePlayer.tags[index];
-      });
-    },
     done() {
-      this.tagsToRemoveUpate();
-
-      this.nextRound();
+      this.daresServices?.findNextDare();
+      this.daresServices?.nextPlayer();
     },
-    nextRound() {
-      this.nextPlayer();
-      this.randomActiveDare();
-    },
-    nextPlayer() {
-      this.activePlayer = this.players[this.activePlayerCount].doc;
-      this.activePlayerCount++;
-      if (this.activePlayerCount >= this.players.length) {
-        this.activePlayerCount = 0;
-      }
-    },
-    async loadDares() {
-      const doc = await this.dbDare.allDocs({
-        include_docs: true,
-        attachments: true,
-      });
-      this.dares = doc.rows;
-      if (this.dares.length == 0) return;
-      this.randomActiveDare();
-    },
-    async loadPlayers() {
-      const doc = await this.dbPlayer.allDocs({
-        include_docs: true,
-        attachments: true,
-      });
-      this.players = doc.rows;
-      if (this.players.length == 0) return;
-      this.nextPlayer();
-    },
-    convertTagToArray(tags) {
-      return Object.keys(_.omitBy(tags, (value) => value === false));
-    },
-    checkPlayerHasAllTagsInArray(tags) {
-      return (
-        tags.filter((tag) => {
-          return this.activePlayerTags.includes(tag);
-        }).length != 0
-      );
-    },
-    randomActiveDare() {
-      this.aciveDare = _.sample(this.possibleDares)?.doc;
+    fail() {
+      this.daresServices?.findNextDare();
+      this.daresServices?.nextPlayer();
     },
   },
   computed: {
-    text() {
-      if (!this.aciveDare) return "";
-      if (!this.aciveDare.text)
-        return this.activePlayer.name + " " + this.aciveDare.name;
-      return this.aciveDare.text.split("$").join(this.activePlayer.name);
+    error() {
+      return this.daresServices?.getError();
     },
-    activePlayerTags() {
-      return Object.keys(
-        _.omitBy(this.activePlayer.tags, (value) => value === false)
-      );
+    player() {
+      return this.daresServices?.getActivePlayer();
     },
-    possibleDares() {
-      return this.dares.filter((dare) => {
-        const tags = this.convertTagToArray(dare.doc.tags);
-        return this.checkPlayerHasAllTagsInArray(tags);
-      });
+    activeDare() {
+      return this.daresServices?.getActiveDare();
+    },
+    activeDareText() {
+      return this.daresServices?.getActiveDareText();
     },
   },
 };
