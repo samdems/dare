@@ -1,7 +1,7 @@
 <template>
   <div>
-    <div v-if="error">
-      {{ error }}
+    <div v-if="error || loadedError">
+      <h1 style="text-align:center">{{ loadedError }} {{ error }}</h1>
     </div>
     <div v-else>
       <h1 style="text-align:center">{{ activeDareText }}</h1>
@@ -26,25 +26,38 @@ export default {
   data() {
     return {
       daresServices: null,
+      error: null,
+      showSkip: false,
     };
   },
   async mounted() {
     this.daresServices = await DaresServices();
-    this.daresServices?.findNextDare();
+    this.nextRound();
   },
   methods: {
     done() {
-      this.daresServices?.findNextDare();
-      this.daresServices?.nextPlayer();
+      this.nextRound();
     },
     fail() {
-      this.daresServices?.findNextDare();
+      this.nextRound();
+    },
+    nextRound() {
       this.daresServices?.nextPlayer();
+      try {
+        this.daresServices?.findNextDare();
+      } catch (error) {
+        if (error.message == "no possible Dares") {
+          this.showSKip = true;
+          this.error = `There are no possible dares for ${this.player.name}. check the tags for ${this.player.name} and the deres.`;
+          return;
+        }
+        this.error = error.message;
+      }
     },
   },
   computed: {
-    error() {
-      return this.daresServices?.getError();
+    loadedError() {
+      return this.daresServices?.getLoadedError();
     },
     player() {
       return this.daresServices?.getActivePlayer();
