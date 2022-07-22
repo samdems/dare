@@ -24,6 +24,7 @@ export default {
       console.log("save");
       this.player._id = uniqid();
       await this.db.put(this.player);
+      PouchDB.replicate("player", "http://localhost:5984/player");
       this.goBack();
     },
     goBack() {

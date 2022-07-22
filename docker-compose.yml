@@ -11,3 +11,10 @@ services:
     command: npm run watch
     volumes:
       - .:/app
+  couchdb:
+    image: couchdb:3
+    ports:
+      - "5984:5984"
+    environment:
+      COUCHDB_USER: username
+      COUCHDB_PASSWORD: password

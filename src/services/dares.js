@@ -1,5 +1,6 @@
 import PouchDB from "pouchdb";
 import _ from "lodash";
+
 const dbSettings = {
   include_docs: true,
   attachments: true,
@@ -34,8 +35,9 @@ export default async () => {
       return this.activeDare;
     },
     getActiveDareText() {
-      if (!this.activeDare.text)
+      if (!this.activeDare.text) {
         return this.getActivePlayer().name + " " + this.activeDare.name;
+      }
       return this.activeDare.text.split("$").join(this.getActivePlayer().name);
     },
     nextPlayer() {
@@ -55,6 +57,7 @@ export default async () => {
       if (!this.activeDare) {
         throw Error("no activeDare found");
       }
+      return this.activeDare;
     },
     convertTagToArray(tags) {
       return Object.keys(_.omitBy(tags, (value) => value === false));
